@@ -40,9 +40,7 @@ class nrpe (
   $nrpe_user       = $nrpe::params::nrpe_user,
   $nrpe_group      = $nrpe::params::nrpe_group,
   $nrpe_pid_file   = $nrpe::params::nrpe_pid_file,
-  $commands = {},
-  $plugins = {},
-) inherits nrpe::params {
+  ) inherits nrpe::params {
 
   if $manage_package {
     package { $package_name:
@@ -72,7 +70,8 @@ class nrpe (
     recurse => $recurse,
     require => Package[$package_name],
   }
-
+  $commands = hiera_hash('nrpe::commands')
+  $plugins = hiera_hash('nrpe::plugins') 
   create_resources(nrpe::command, $commands)
   create_resources(nrpe::hiera_plugin, $plugins)
 }
